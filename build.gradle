@@ -1,0 +1,39 @@
+plugins {
+	id 'java'
+	id 'eclipse'
+	id 'idea'
+	id 'application'
+	
+	id 'com.github.hierynomus.license' version '0.11.0'
+}
+
+repositories {
+	mavenCentral()
+	maven {
+		name  "gameminers"
+		url "http://mvn.gameminers.com/artifactory/repo"
+	}
+}
+
+defaultTasks 'licenseFormat', 'distZip'
+
+license {
+	header file('HEADER')
+	exclude '*.png'
+	sourceSets = project.sourceSets
+	ignoreFailures false
+	strictCheck true
+	mapping {
+		java = 'SLASHSTAR_STYLE'
+	}
+}
+
+mainClassName = "com.gameminers.ethereal.installer.creator.Creator"
+sourceCompatibility = '1.6'
+
+
+dependencies {
+	compile 'com.google.code.gson:gson:2.3.1'
+	compile 'net.sf.jopt-simple:jopt-simple:4.8'
+	compile 'com.gameminers:ethereallib:1.2'
+}
