@@ -1,6 +1,6 @@
 /*
  *  Ethereal Installer
- *  Copyright (C) 2015 Aesen Vismea
+ *  Copyright (C) 2015 Aesen Vismea and Falkreon
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,12 +18,17 @@
 package com.gameminers.ethereal.installer.creator;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileLock;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 
 import com.gameminers.ethereal.lib.Components;
+import com.gameminers.ethereal.lib.Dialogs;
 import com.gameminers.ethereal.lib.Directories;
 import com.gameminers.ethereal.lib.Frames;
 import com.google.gson.Gson;
@@ -42,6 +47,24 @@ public class Creator {
 		window.setJMenuBar(createMenuBar());
 		
 		window.setVisible(true);
+		
+		File launcherJar = new File(minecraftDirectory, "servers.dat");
+		if (!launcherJar.exists()) {
+		    Dialogs.showErrorDialog(window, "Can't locate the Minecraft launcher. Are you sure Minecraft is installed?",
+		            new FileNotFoundException("Can't locate the Minecraft launcher."));
+		    
+		} else {
+		    System.out.println("Writable: "+launcherJar.canWrite());
+		    try (FileLock lock = new FileOutputStream(launcherJar).getChannel().lock()) {
+		        
+		        System.out.println("lock isValid?: "+lock.isValid());
+		        System.out.println("OK to modify.");
+		        
+		    } catch (IOException ex) {
+		        Dialogs.showErrorDialog(window, "Can't edit a running Minecraft instance. Please close the launcher and try again.",
+	                    new FileNotFoundException("Can't edit a running Minecraft instance."));
+		    }
+		}
 	}
 	
 	private static JMenuBar createMenuBar() {
