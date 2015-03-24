@@ -9,10 +9,11 @@ plugins {
 
 repositories {
 	mavenCentral()
-	maven {
-		name  "gameminers"
-		url "http://mvn.gameminers.com/artifactory/repo"
-	}
+	mavenLocal()
+	//maven {
+	//	name  "gameminers"
+	//	url "http://mvn.gameminers.com/artifactory/repo"
+	//}
 }
 
 defaultTasks 'licenseFormat', 'distZip'

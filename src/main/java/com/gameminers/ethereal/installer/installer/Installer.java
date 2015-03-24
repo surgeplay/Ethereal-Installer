@@ -17,6 +17,10 @@
  */
 package com.gameminers.ethereal.installer.installer;
 
-public class Installer {
+import com.gameminers.system_specific.ProcessList;
 
+public class Installer {
+    public static void main(String[] args) {
+        System.out.println("Is Running: "+ProcessList.isRunning("Minecraft"));  
+    }
 }
