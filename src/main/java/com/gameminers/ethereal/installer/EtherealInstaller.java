@@ -17,14 +17,20 @@
  */
 package com.gameminers.ethereal.installer;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import javax.swing.Box;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import com.gameminers.ethereal.installer.action.ApplicationActions;
 import com.gameminers.ethereal.lib.Dialogs;
@@ -68,6 +74,28 @@ public class EtherealInstaller {
     		});
     		
     		window.setJMenuBar(createMenuBar());
+    		
+    		JPanel container = new ModpackTileContainer();
+    		
+    		JScrollPane scroller = new JScrollPane(container);
+    		scroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+    		scroller.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    		window.add(scroller, BorderLayout.CENTER);
+    		
+    		Modpack fondue = new Modpack();
+    		fondue.name = "Fondue";
+    		fondue.backgroundColor = new Color(255, 224, 12);
+    		fondue.textColor = new Color(98, 91, 47);
+    		
+    		Modpack ata = new Modpack();
+    		ata.name = "After the Apocalypse";
+    		ata.backgroundColor = new Color(106, 38, 111);
+    		ata.textColor = new Color(178, 134, 181);
+    		
+    		container.add(new ModpackTile(fondue));
+    		container.add(new ModpackTile(ata));
+    		Component glue = Box.createVerticalGlue();
+    		container.add(glue);
     		
     		window.setVisible(true);
 		}
