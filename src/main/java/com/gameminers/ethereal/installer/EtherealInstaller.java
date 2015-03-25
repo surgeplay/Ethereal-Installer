@@ -15,55 +15,61 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gameminers.ethereal.installer.creator;
+package com.gameminers.ethereal.installer;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.channels.FileLock;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 
-import com.gameminers.ethereal.lib.Components;
+import com.gameminers.ethereal.installer.action.ApplicationActions;
 import com.gameminers.ethereal.lib.Dialogs;
 import com.gameminers.ethereal.lib.Directories;
 import com.gameminers.ethereal.lib.Frames;
+import com.gameminers.system_specific.ProcessList;
 import com.google.gson.Gson;
 
-public class Creator {
+public class EtherealInstaller {
 	private static File minecraftDirectory;
 	public static JFrame window;
 	public static final Gson gson = new Gson();
 	public static void main(String[] args) {
 		minecraftDirectory = Directories.getAppData("minecraft");
 		
-		Frames.initLAF();
-		window = Frames.create("Installer");
-		window.addWindowListener(new MainWindowListener());
+		boolean launchReady = true;
 		
-		window.setJMenuBar(createMenuBar());
+		if (ProcessList.isRunning("Minecraft")) {
+            Dialogs.showErrorDialog(window, "Can't edit a running Minecraft instance. Please close the launcher and try again.",
+                    new IllegalStateException("Can't edit a running Minecraft instance."));
+            launchReady = false;
+        }
+        
+        
+        File launcherJar = new File(minecraftDirectory, "launcher.jar");
+        if (!launcherJar.exists()) {
+            Dialogs.showErrorDialog(window, "Can't locate the Minecraft launcher. Are you sure Minecraft is installed?",
+                    new FileNotFoundException("Can't locate the Minecraft launcher."));
+            launchReady = false;
+        }
 		
-		window.setVisible(true);
 		
-		File launcherJar = new File(minecraftDirectory, "servers.dat");
-		if (!launcherJar.exists()) {
-		    Dialogs.showErrorDialog(window, "Can't locate the Minecraft launcher. Are you sure Minecraft is installed?",
-		            new FileNotFoundException("Can't locate the Minecraft launcher."));
-		    
-		} else {
-		    System.out.println("Writable: "+launcherJar.canWrite());
-		    try (FileLock lock = new FileOutputStream(launcherJar).getChannel().lock()) {
-		        
-		        System.out.println("lock isValid?: "+lock.isValid());
-		        System.out.println("OK to modify.");
-		        
-		    } catch (IOException ex) {
-		        Dialogs.showErrorDialog(window, "Can't edit a running Minecraft instance. Please close the launcher and try again.",
-	                    new FileNotFoundException("Can't edit a running Minecraft instance."));
-		    }
+		if (launchReady) {
+    		Frames.initLAF();
+    		window = Frames.create("Installer");
+    		window.addWindowListener(new WindowAdapter(){
+    		    @Override
+    		    public void windowClosing(WindowEvent e) {
+    		        System.exit(0); // TODO
+    		    }
+    		});
+    		
+    		window.setJMenuBar(createMenuBar());
+    		
+    		window.setVisible(true);
 		}
 	}
 	
@@ -76,7 +82,8 @@ public class Creator {
 
 	private static JMenu createHelpMenu() {
 		JMenu menu = new JMenu("Help");
-		menu.add(Components.createAboutDialogMenuItem(window, "Installer"));
+		menu.add(ApplicationActions.ABOUT);
+		//menu.add(Components.createAboutDialogMenuItem(window, "Installer"));
 		return menu;
 	}
 }
