@@ -82,6 +82,22 @@ public class EtherealInstaller {
     		scroller.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     		window.add(scroller, BorderLayout.CENTER);
     		
+    		
+    		ModDefinition farragoMod = new ModDefinition("farrago", "1.0");
+    		farragoMod.displayName = "Farrago";
+    		farragoMod.description = "A random, often senseless collection of fun and interesting game mechanics.";
+    		
+    		DataFile file = new DataFile();
+    		file.mods.add(farragoMod);
+    		try {
+    		    //ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    		    file.toStream(System.out);
+    		    //byte[] output = stream.toByteArray();
+    		    //System.out.println("Generated "+output.length+" bytes.");
+    		    //System.out.println(Arrays.toString(output));
+    		} catch (Throwable t) { t.printStackTrace();}
+    		
+    		
     		Modpack fondue = new Modpack();
     		fondue.name = "Fondue";
     		fondue.backgroundColor = new Color(255, 224, 12);
