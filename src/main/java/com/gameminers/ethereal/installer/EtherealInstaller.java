@@ -24,6 +24,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URL;
 
 import javax.swing.Box;
 import javax.swing.JFrame;
@@ -36,6 +39,7 @@ import com.gameminers.ethereal.installer.action.ApplicationActions;
 import com.gameminers.ethereal.lib.Dialogs;
 import com.gameminers.ethereal.lib.Directories;
 import com.gameminers.ethereal.lib.Frames;
+import com.gameminers.ethereal.lib.Resources;
 import com.gameminers.system_specific.ProcessList;
 import com.google.gson.Gson;
 
@@ -82,13 +86,32 @@ public class EtherealInstaller {
     		scroller.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     		window.add(scroller, BorderLayout.CENTER);
     		
-    		
+    		/*
     		ModDefinition farragoMod = new ModDefinition("farrago", "1.0");
     		farragoMod.displayName = "Farrago";
-    		farragoMod.description = "A random, often senseless collection of fun and interesting game mechanics.";
+    		farragoMod.description = "A confused variety of random things, from blocks, to items, to entities. The point is there is no point.";
+    		farragoMod.setImage(Resources.getPNGAsset("iface/farrago"));
+    		*/
+    		DataFile file = new DataFile(); //Necessary in case of IO error
+    		try {
+    		    file = DataFile.fromStream( ClassLoader.getSystemResourceAsStream("assets/json/distributed.json") );
+    		} catch (IOException ex) {
+    		    System.out.println("There was a problem loading the data file.");
+    		    ex.printStackTrace();
+    		}
     		
-    		DataFile file = new DataFile();
-    		file.mods.add(farragoMod);
+    		/*
+    		try {
+    		    FileOutputStream out = new FileOutputStream("out.json");
+    		    file.toStream(out);
+    		    out.close();
+    		} catch(Exception ex) {
+    		    ex.printStackTrace();
+    		}*/
+            
+            
+    		
+    		/*
     		try {
     		    //ByteArrayOutputStream stream = new ByteArrayOutputStream();
     		    file.toStream(System.out);
@@ -96,7 +119,7 @@ public class EtherealInstaller {
     		    //System.out.println("Generated "+output.length+" bytes.");
     		    //System.out.println(Arrays.toString(output));
     		} catch (Throwable t) { t.printStackTrace();}
-    		
+    		*/
     		
     		Modpack fondue = new Modpack();
     		fondue.name = "Fondue";

@@ -1,5 +1,8 @@
 package com.gameminers.ethereal.installer;
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+
 public class ModDefinition {
     private String modId = "NOPE";
     public String displayName = "Unnamed";
@@ -8,7 +11,8 @@ public class ModDefinition {
     public String category = "Misc";
     public String fileName = null;
     public String url = null;
-    public String image = null;
+    private String imageData = null;
+    private transient BufferedImage image = null;
     private transient Integer hashCache = null;
     
     @SuppressWarnings("unused")
@@ -35,6 +39,23 @@ public class ModDefinition {
     public void setVersion(String ver) {
         version = ver;
         hashCache = null;
+    }
+    
+    public void setImage(BufferedImage image) {
+        this.image = image;
+        if (image!=null) {
+            this.imageData = ImageURL.create(image);
+        } else {
+            this.imageData = null;
+        }
+    }
+    
+    public BufferedImage getImage() {
+        if (this.image==null && this.imageData!=null) {
+            this.image = ImageURL.decode(this.imageData);
+        }
+        
+        return this.image;
     }
     
     /**
